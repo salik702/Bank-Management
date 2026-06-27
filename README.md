@@ -122,7 +122,6 @@ Bank-Management-System/
 ├── app.py                  # Main Streamlit application
 ├── Bank Management.py      # Core OOP implementation
 ├── data.json                # JSON database (auto-generated)
-├── requirements.txt
 └── README.md
 ```
 
