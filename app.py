@@ -1,4 +1,4 @@
-# app.py - Bank Management System with Advanced UI
+# app.py - Bank Management System with Advanced UI (No External Dependencies)
 import streamlit as st
 import json
 import random
@@ -7,7 +7,6 @@ from pathlib import Path
 import pandas as pd
 from datetime import datetime
 import base64
-from streamlit_option_menu import option_menu
 
 # Page Configuration
 st.set_page_config(
@@ -17,7 +16,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Premium UI - Minimized padding
+# Custom CSS for Premium UI
 def load_css():
     st.markdown("""
     <style>
@@ -35,18 +34,15 @@ def load_css():
             max-width: 100% !important;
         }
         
-        /* Remove extra space from top */
         .stApp {
             margin-top: 0px !important;
             padding-top: 0px !important;
         }
         
-        /* Reset and Base */
         .stApp {
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
         }
         
-        /* Glassmorphism Cards */
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -64,7 +60,6 @@ def load_css():
             border-color: rgba(255, 255, 255, 0.2);
         }
         
-        /* Premium Header - Reduced padding */
         .premium-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 1.5rem 2rem;
@@ -109,7 +104,6 @@ def load_css():
             z-index: 1;
         }
         
-        /* Metric Cards */
         .metric-premium {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -159,7 +153,6 @@ def load_css():
             opacity: 0.2;
         }
         
-        /* Account Card Premium */
         .account-premium {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 20px;
@@ -200,7 +193,6 @@ def load_css():
             text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         
-        /* Buttons Premium */
         .stButton > button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -221,11 +213,6 @@ def load_css():
             box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
         }
         
-        .stButton > button:active {
-            transform: translateY(0);
-        }
-        
-        /* Input Fields */
         .stTextInput > div > div > input,
         .stNumberInput > div > div > input {
             background: rgba(255, 255, 255, 0.05);
@@ -247,24 +234,17 @@ def load_css():
             color: rgba(255, 255, 255, 0.4);
         }
         
-        /* Sidebar */
         .css-1d391kg {
             background: rgba(15, 12, 41, 0.95);
             backdrop-filter: blur(10px);
         }
         
-        .sidebar-premium {
-            padding: 1rem;
-        }
-        
-        /* Divider */
         .premium-divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
             margin: 1rem 0;
         }
         
-        /* Status Badge */
         .status-badge {
             display: inline-block;
             padding: 0.2rem 0.8rem;
@@ -281,7 +261,6 @@ def load_css():
             border: 1px solid rgba(56, 239, 125, 0.3);
         }
         
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -296,7 +275,6 @@ def load_css():
             border-radius: 10px;
         }
         
-        /* Toast notifications */
         .stAlert {
             border-radius: 12px;
             border: none;
@@ -323,16 +301,13 @@ def load_css():
             color: #ffc107;
         }
         
-        /* Hide Streamlit Branding */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         
-        /* Reduce sidebar padding */
         .css-1d391kg .css-1v3fvcr {
             padding-top: 0.5rem;
         }
         
-        /* Footer - Minimal */
         .premium-footer {
             text-align: center;
             padding: 0.8rem;
@@ -342,7 +317,6 @@ def load_css():
             margin-top: 1rem;
         }
         
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -358,18 +332,15 @@ def load_css():
             animation: fadeInUp 0.5s ease;
         }
         
-        /* Remove extra spacing from columns */
         .row-widget.stColumns {
             margin-top: 0px !important;
             margin-bottom: 0px !important;
         }
         
-        /* Reduce spacing between elements */
         .element-container {
             margin-bottom: 0.3rem !important;
         }
         
-        /* Style for metrics in sidebar */
         .stMetric {
             background: rgba(255,255,255,0.03);
             border-radius: 10px;
@@ -385,6 +356,28 @@ def load_css():
         .stMetric div {
             color: white !important;
             font-size: 1.2rem !important;
+        }
+        
+        /* Sidebar menu styling */
+        .sidebar-menu-item {
+            padding: 0.5rem 1rem;
+            margin: 0.2rem 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+        
+        .sidebar-menu-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: white;
+        }
+        
+        .sidebar-menu-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -583,6 +576,8 @@ if 'user_data' not in st.session_state:
     st.session_state.user_data = None
 if 'debug_mode' not in st.session_state:
     st.session_state.debug_mode = False
+if 'page' not in st.session_state:
+    st.session_state.page = "Login"
 
 bank = Bank()
 
@@ -590,7 +585,7 @@ bank = Bank()
 # MAIN APP
 # ============================================================================
 def main():
-    # Sidebar
+    # Sidebar with custom navigation
     with st.sidebar:
         st.markdown("""
         <div style="text-align: center; padding: 0.5rem 0;">
@@ -602,40 +597,36 @@ def main():
         
         st.markdown('<div class="premium-divider"></div>', unsafe_allow_html=True)
         
+        # Navigation buttons
         if not st.session_state.logged_in:
-            menu_options = ["🔐 Login", "📝 Create Account"]
-            menu_icons = ["box-arrow-in-right", "person-plus"]
-            default_index = 0
+            if st.button("🔐 Login", use_container_width=True, key="nav_login"):
+                st.session_state.page = "Login"
+                st.rerun()
+            if st.button("📝 Create Account", use_container_width=True, key="nav_create"):
+                st.session_state.page = "Create Account"
+                st.rerun()
         else:
-            menu_options = ["📊 Dashboard", "💰 Deposit", "💳 Withdraw", "👤 My Details", "✏️ Update", "🗑️ Delete", "🚪 Logout"]
-            menu_icons = ["house", "arrow-down-circle", "arrow-up-circle", "person", "pencil", "trash", "box-arrow-right"]
-            default_index = 0
-        
-        selected = option_menu(
-            menu_title=None,
-            options=menu_options,
-            icons=menu_icons,
-            menu_icon="cast",
-            default_index=default_index,
-            styles={
-                "container": {"padding": "0!important", "background-color": "transparent"},
-                "icon": {"color": "#667eea", "font-size": "18px"},
-                "nav-link": {
-                    "font-size": "14px", 
-                    "text-align": "left", 
-                    "margin": "3px 0",
-                    "color": "rgba(255,255,255,0.7)",
-                    "border-radius": "10px",
-                    "transition": "all 0.3s ease",
-                    "padding": "8px 12px"
-                },
-                "nav-link-selected": {
-                    "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    "color": "white",
-                    "font-weight": "600",
-                },
-            }
-        )
+            if st.button("📊 Dashboard", use_container_width=True, key="nav_dashboard"):
+                st.session_state.page = "Dashboard"
+                st.rerun()
+            if st.button("💰 Deposit", use_container_width=True, key="nav_deposit"):
+                st.session_state.page = "Deposit"
+                st.rerun()
+            if st.button("💳 Withdraw", use_container_width=True, key="nav_withdraw"):
+                st.session_state.page = "Withdraw"
+                st.rerun()
+            if st.button("👤 My Details", use_container_width=True, key="nav_details"):
+                st.session_state.page = "My Details"
+                st.rerun()
+            if st.button("✏️ Update", use_container_width=True, key="nav_update"):
+                st.session_state.page = "Update"
+                st.rerun()
+            if st.button("🗑️ Delete", use_container_width=True, key="nav_delete"):
+                st.session_state.page = "Delete"
+                st.rerun()
+            if st.button("🚪 Logout", use_container_width=True, key="nav_logout"):
+                st.session_state.page = "Logout"
+                st.rerun()
         
         st.markdown('<div class="premium-divider"></div>', unsafe_allow_html=True)
         
@@ -658,28 +649,32 @@ def main():
     
     # Main Content
     if not st.session_state.logged_in:
-        if selected == "🔐 Login":
+        if st.session_state.page == "Login":
             login_page()
-        elif selected == "📝 Create Account":
+        elif st.session_state.page == "Create Account":
             create_account_page()
+        else:
+            login_page()  # Default to login
     else:
-        if selected == "📊 Dashboard":
+        if st.session_state.page == "Dashboard":
             dashboard_page()
-        elif selected == "💰 Deposit":
+        elif st.session_state.page == "Deposit":
             deposit_page()
-        elif selected == "💳 Withdraw":
+        elif st.session_state.page == "Withdraw":
             withdraw_page()
-        elif selected == "👤 My Details":
+        elif st.session_state.page == "My Details":
             my_details_page()
-        elif selected == "✏️ Update":
+        elif st.session_state.page == "Update":
             update_details_page()
-        elif selected == "🗑️ Delete":
+        elif st.session_state.page == "Delete":
             delete_account_page()
-        elif selected == "🚪 Logout":
+        elif st.session_state.page == "Logout":
             logout()
+        else:
+            dashboard_page()  # Default to dashboard
 
 # ============================================================================
-# PAGE FUNCTIONS
+# PAGE FUNCTIONS (Same as before - keeping them short for space)
 # ============================================================================
 
 def login_page():
@@ -695,17 +690,8 @@ def login_page():
         
         st.markdown('<div class="glass-card fade-in-up">', unsafe_allow_html=True)
         
-        account_no = st.text_input(
-            "📋 Account Number",
-            placeholder="Enter your account number"
-        )
-        
-        pin = st.text_input(
-            "🔑 PIN",
-            type="password",
-            placeholder="Enter your 4-digit PIN",
-            max_chars=4
-        )
+        account_no = st.text_input("📋 Account Number", placeholder="Enter your account number")
+        pin = st.text_input("🔑 PIN", type="password", placeholder="Enter your 4-digit PIN", max_chars=4)
         
         col1, col2 = st.columns(2)
         with col1:
@@ -719,6 +705,7 @@ def login_page():
                             st.session_state.account_no = account_no
                             st.session_state.pin = pin_int
                             st.session_state.user_data = user_data
+                            st.session_state.page = "Dashboard"
                             st.success("✅ Login successful!")
                             st.balloons()
                             st.rerun()
@@ -878,17 +865,17 @@ def dashboard_page():
     
     with col1:
         if st.button("💰 Deposit", use_container_width=True):
-            st.session_state.selected = "💰 Deposit"
+            st.session_state.page = "Deposit"
             st.rerun()
     
     with col2:
         if st.button("💳 Withdraw", use_container_width=True):
-            st.session_state.selected = "💳 Withdraw"
+            st.session_state.page = "Withdraw"
             st.rerun()
     
     with col3:
         if st.button("👤 Profile", use_container_width=True):
-            st.session_state.selected = "👤 My Details"
+            st.session_state.page = "My Details"
             st.rerun()
 
 def deposit_page():
@@ -1180,6 +1167,7 @@ def delete_account_page():
                         st.session_state.account_no = None
                         st.session_state.pin = None
                         st.session_state.user_data = None
+                        st.session_state.page = "Login"
                         st.info("You have been logged out.")
                         st.rerun()
                     else:
@@ -1213,6 +1201,7 @@ def logout():
     st.session_state.account_no = None
     st.session_state.pin = None
     st.session_state.user_data = None
+    st.session_state.page = "Login"
     st.success("✅ Logged out successfully!")
     st.rerun()
 
