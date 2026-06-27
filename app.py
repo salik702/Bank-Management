@@ -5,8 +5,6 @@ import random
 import string
 from pathlib import Path
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 from datetime import datetime
 import base64
 from streamlit_option_menu import option_menu
