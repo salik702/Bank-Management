@@ -16,7 +16,7 @@
 </p>
 
 <p>
-  <a href="https://bank-management-system-salik.streamlit.app/">
+  <a href="https://bank-management-salik.streamlit.app/">
     <img src="https://img.shields.io/badge/🚀%20LIVE%20DEMO-Click%20to%20Launch-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" />
   </a>
 </p>
