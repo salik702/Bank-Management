@@ -15,7 +15,7 @@ class Bank:
         else:
             print("No such file exists")
     except Exception as err:
-        print("An exception occured as {err}")
+        print(f"An exception occured as {err}")  
 
     @classmethod
     def __update(cls):
@@ -62,7 +62,7 @@ class Bank:
             i for i in Bank.data if i["accountNo."] == accnumber and i["pin"] == pin
         ]
 
-        if not userdata:
+        if not userdata:  
             print("Sorry no data found")
         else:
             amount = int(input("How much you want to deposit:- "))
@@ -114,7 +114,7 @@ class Bank:
             i for i in Bank.data if i["accountNo."] == accnumber and i["pin"] == pin
         ]
 
-        if userdata == False:
+        if not userdata: 
             print("No such user found")
         else:
             print("You cannot change the age , account number and balance")
@@ -157,7 +157,7 @@ class Bank:
             i for i in Bank.data if i["accountNo."] == accnumber and i["pin"] == pin
         ]
         
-        if userdata == False:
+        if not userdata:  
             print("Sorry no such data exists")
         else:
             check = input("Press y if you actually want to delete the account or press n")
