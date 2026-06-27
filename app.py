@@ -1210,7 +1210,7 @@ def logout():
 # ============================================================================
 st.markdown("""
 <div class="premium-footer">
-    🏦 World Bank Management System v2.0 | Developed with ❤️ using Streamlit
+    🏦 World Bank Management System v2.0 | Developed with ❤️by Salik Ahmad using Streamlit
 </div>
 """, unsafe_allow_html=True)
 
